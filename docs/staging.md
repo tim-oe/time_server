@@ -4,7 +4,7 @@ testing hardware in different phases
 
 ## phase 1
 
-Indoor testing hardware components for longjevity using standard power. Encountered issue with the wifi usb dongle that would periodically dropped. I was able to track it down to insufficient power. I added a usb power enhancer since there was additional USB ports that code be used. System ran unintrupted for weeks. there was some experimenting with the [ntp drivers](https://www.ntp.org/documentation/drivers/) and offsets to minimize drift. I was able to get the variance down to nanoseconds.
+Indoor testing hardware components for longjevity using standard power. Encountered issue with the wifi usb dongle that would periodically dropped. I was able to track it down to insufficient power. I added a usb power enhancer since there was additional USB ports that code be used. System ran unintrupted for weeks. there was some experimenting with the [ntp drivers](https://www.ntp.org/documentation/drivers/) and offsets to minimize drift. Using GPSD and the Shared memory driver seems to be the best solution. I was able to get the variance down to nanoseconds.
 
 ![indoor poc](img/indoor-poc.jpg?raw=true)
 

@@ -10,10 +10,11 @@ Raspberry Pi based NTP server, levaging GPS for time synchronization.
 levaged ansible and cloud init
 
 - [see Pi initialization project](https://github.com/tim-oe/piImage)
-- [ansible playbooks](https://github.com/tim-oe/piImage/tree/main/src/ansible/timesrvr)
+- [see ansible playbooks](https://github.com/tim-oe/piImage/tree/main/src/ansible/timesrvr)
 
 ## TODOs
 
 - build proper stand
 - venting of battery box
 - temprature sensors
+- system monitoring

@@ -15,3 +15,4 @@ Main parts used to assemble system. There's additional parts such as wiring, con
   - [bluetooth module](https://www.renogy.com/pages/bt-1-bluetooth-module-new-version-rcm-bt1-html)
 - [12V 7Ah (7.2Ah) Lithium battery X 4](https://www.amazon.com/dp/B0B78K2TSV)
 - [whetherproof connection box](https://www.amazon.com/dp/B006EUHT2W)
+- [micro USB buck converter](https://www.amazon.com/dp/B0B6NZBWV4)
