@@ -9,12 +9,7 @@ from apps.common.views.documentation import (
 from apps.ds18b20_sensors.urls import urlpatterns as ds18b20_sensors_urls
 from apps.renogy_devices.urls import urlpatterns as renogy_devices_urls
 
-# Import app URLs
-from apps.time_management.urls import urlpatterns as time_management_urls
-
 urlpatterns = [
-    # Time Management App
-    path("", include(time_management_urls)),
     # Renogy Devices App
     path("", include(renogy_devices_urls)),
     # DS18B20 Sensors App

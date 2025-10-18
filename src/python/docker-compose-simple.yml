@@ -1,0 +1,14 @@
+# Simplified Docker Compose for Current Application
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+    # No dependencies needed for current SQLite setup
+
+# Remove PostgreSQL and Redis until actually needed

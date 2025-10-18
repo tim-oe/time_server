@@ -1,5 +1,4 @@
-# Docker Compose for Development
-version: '3.8'
+# Docker Compose for Solar Monitoring System
 
 services:
   web:
@@ -13,11 +12,20 @@ services:
     depends_on:
       - db
       - redis
+    # Add device access for Renogy Bluetooth and DS18B20 sensors
+    privileged: true
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0  # For Renogy devices
+      - /dev/ttyACM0:/dev/ttyACM0  # Alternative device path
+    # Mount 1-Wire interface for DS18B20 sensors
+    volumes:
+      - .:/app
+      - /sys/bus/w1:/sys/bus/w1:ro  # Read-only access to 1-Wire interface
 
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: time_server
+      POSTGRES_DB: solar_monitoring
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -29,8 +37,11 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:
 
 

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     # Custom apps
-    "apps.time_management",
     "apps.renogy_devices",
     "apps.ds18b20_sensors",
     "api",
@@ -154,8 +153,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Time Server API",
-    "DESCRIPTION": "A comprehensive API for time management and Renogy device monitoring",
+    "TITLE": "Solar Monitoring API",
+    "DESCRIPTION": "A comprehensive API for monitoring solar charge controllers and temperature sensors",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
@@ -189,22 +188,14 @@ SPECTACULAR_SETTINGS = {
         "showObjectSchemaExamples": True,
     },
     "TAGS": [
-        {"name": "Time", "description": "Time-related endpoints"},
-        {"name": "Health", "description": "Health check endpoints"},
-        {"name": "Time Entries", "description": "Time entry management"},
-        {
-            "name": "Renogy Devices",
-            "description": "Renogy device management and monitoring",
-        },
-        {
-            "name": "DS18B20 Sensors",
-            "description": "DS18B20 temperature sensor management and monitoring",
-        },
+        {"name": "System", "description": "System health and time endpoints"},
+        {"name": "Renogy Devices", "description": "Renogy solar charge controller management and monitoring"},
+        {"name": "DS18B20 Sensors", "description": "DS18B20 temperature sensor management and monitoring"},
     ],
     "EXTENSIONS_INFO": {
         "x-logo": {
-            "url": "https://via.placeholder.com/200x50.png?text=Time+Server",
-            "altText": "Time Server Logo",
+            "url": "https://via.placeholder.com/200x50.png?text=Solar+Monitor",
+            "altText": "Solar Monitoring Logo",
         }
     },
 }
