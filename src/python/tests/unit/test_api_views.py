@@ -4,9 +4,10 @@ API Views Tests
 Tests for the API view endpoints across all apps.
 """
 
-import pytest
 from django.urls import reverse
 from django.utils import timezone
+
+import pytest
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -44,17 +45,15 @@ class TimeManagementAPITestCase(APITestCase):
         start_time = timezone.datetime(2024, 1, 1, 10, 0, 0, tzinfo=timezone.utc)
         end_time = timezone.datetime(2024, 1, 1, 11, 0, 0, tzinfo=timezone.utc)
         TimeEntry.objects.create(
-            description="Test entry",
-            start_time=start_time,
-            end_time=end_time
+            description="Test entry", start_time=start_time, end_time=end_time
         )
 
         url = reverse("timeentry-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        if isinstance(response.data, dict) and 'results' in response.data:
-            self.assertEqual(len(response.data['results']), 1)
+        if isinstance(response.data, dict) and "results" in response.data:
+            self.assertEqual(len(response.data["results"]), 1)
         else:
             self.assertEqual(len(response.data), 1)
 
@@ -64,10 +63,10 @@ class TimeManagementAPITestCase(APITestCase):
         data = {
             "description": "New test entry",
             "start_time": "2024-01-01T10:00:00Z",
-            "end_time": "2024-01-01T11:00:00Z"
+            "end_time": "2024-01-01T11:00:00Z",
         }
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(TimeEntry.objects.count(), 1)
 
@@ -78,16 +77,12 @@ class TimeManagementAPITestCase(APITestCase):
         end_time1 = timezone.datetime(2024, 1, 1, 11, 0, 0, tzinfo=timezone.utc)
         start_time2 = timezone.datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
         end_time2 = timezone.datetime(2024, 1, 1, 13, 0, 0, tzinfo=timezone.utc)
-        
+
         TimeEntry.objects.create(
-            description="Test entry 1",
-            start_time=start_time1,
-            end_time=end_time1
+            description="Test entry 1", start_time=start_time1, end_time=end_time1
         )
         TimeEntry.objects.create(
-            description="Test entry 2",
-            start_time=start_time2,
-            end_time=end_time2
+            description="Test entry 2", start_time=start_time2, end_time=end_time2
         )
 
         url = reverse("timeentry-statistics")
@@ -101,12 +96,9 @@ class TimeManagementAPITestCase(APITestCase):
     def test_start_timer(self):
         """Test starting a timer."""
         url = reverse("timeentry-start-timer")
-        data = {
-            "description": "Timer test",
-            "start_time": "2024-01-01T10:00:00Z"
-        }
+        data = {"description": "Timer test", "start_time": "2024-01-01T10:00:00Z"}
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(TimeEntry.objects.count(), 1)
 
@@ -114,17 +106,14 @@ class TimeManagementAPITestCase(APITestCase):
         """Test getting active timers."""
         # Create an active timer (no end_time)
         start_time = timezone.datetime(2024, 1, 1, 10, 0, 0, tzinfo=timezone.utc)
-        TimeEntry.objects.create(
-            description="Active timer",
-            start_time=start_time
-        )
+        TimeEntry.objects.create(description="Active timer", start_time=start_time)
 
         url = reverse("timeentry-active-timers")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        if isinstance(response.data, dict) and 'results' in response.data:
-            self.assertEqual(len(response.data['results']), 1)
+        if isinstance(response.data, dict) and "results" in response.data:
+            self.assertEqual(len(response.data["results"]), 1)
         else:
             self.assertEqual(len(response.data), 1)
 
@@ -144,12 +133,9 @@ class RenogyDevicesAPITestCase(APITestCase):
     def test_renogy_device_add(self):
         """Test adding a Renogy device."""
         url = reverse("renogy_device_add")
-        data = {
-            "device_address": "F8:55:48:17:99:EB",
-            "timeout": 10
-        }
+        data = {"device_address": "F8:55:48:17:99:EB", "timeout": 10}
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("message", response.data)
         self.assertIn("device_address", response.data)
@@ -157,12 +143,9 @@ class RenogyDevicesAPITestCase(APITestCase):
     def test_renogy_device_add_invalid_address(self):
         """Test adding a Renogy device with invalid address."""
         url = reverse("renogy_device_add")
-        data = {
-            "device_address": "invalid-address",
-            "timeout": 10
-        }
+        data = {"device_address": "invalid-address", "timeout": 10}
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_renogy_device_status(self):
@@ -170,10 +153,12 @@ class RenogyDevicesAPITestCase(APITestCase):
         # First add a device
         add_url = reverse("renogy_device_add")
         add_data = {"device_address": "F8:55:48:17:99:EB"}
-        self.client.post(add_url, add_data, format='json')
+        self.client.post(add_url, add_data, format="json")
 
         # Then get its status
-        status_url = reverse("renogy_device_status", kwargs={"device_address": "F8:55:48:17:99:EB"})
+        status_url = reverse(
+            "renogy_device_status", kwargs={"device_address": "F8:55:48:17:99:EB"}
+        )
         response = self.client.get(status_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -182,7 +167,9 @@ class RenogyDevicesAPITestCase(APITestCase):
 
     def test_renogy_device_not_found(self):
         """Test getting status of non-existent device."""
-        url = reverse("renogy_device_status", kwargs={"device_address": "00:00:00:00:00:00"})
+        url = reverse(
+            "renogy_device_status", kwargs={"device_address": "00:00:00:00:00:00"}
+        )
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -221,12 +208,9 @@ class DS18B20SensorsAPITestCase(APITestCase):
     def test_ds18b20_sensor_add(self):
         """Test adding a DS18B20 sensor."""
         url = reverse("ds18b20_sensor_add")
-        data = {
-            "sensor_id": "28-0123456789ab",
-            "sensor_name": "Test Sensor"
-        }
+        data = {"sensor_id": "28-0123456789ab", "sensor_name": "Test Sensor"}
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("message", response.data)
         self.assertIn("sensor_id", response.data)
@@ -236,21 +220,20 @@ class DS18B20SensorsAPITestCase(APITestCase):
         url = reverse("ds18b20_sensor_add")
         data = {"sensor_id": "28-0123456789ab"}  # Missing sensor_name
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_ds18b20_sensor_info(self):
         """Test getting DS18B20 sensor info."""
         # First add a sensor
         add_url = reverse("ds18b20_sensor_add")
-        add_data = {
-            "sensor_id": "28-0123456789ab",
-            "sensor_name": "Test Sensor"
-        }
-        self.client.post(add_url, add_data, format='json')
+        add_data = {"sensor_id": "28-0123456789ab", "sensor_name": "Test Sensor"}
+        self.client.post(add_url, add_data, format="json")
 
         # Then get its info
-        info_url = reverse("ds18b20_sensor_info", kwargs={"sensor_id": "28-0123456789ab"})
+        info_url = reverse(
+            "ds18b20_sensor_info", kwargs={"sensor_id": "28-0123456789ab"}
+        )
         response = self.client.get(info_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

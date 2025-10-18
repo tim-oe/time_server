@@ -462,4 +462,3 @@ if __name__ == "__main__":
     print(f"Total sensors: {summary['total_sensors']}")
     print(f"Available sensors: {summary['available_sensors']}")
     print(f"Unavailable sensors: {summary['unavailable_sensors']}")
-

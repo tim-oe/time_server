@@ -8,7 +8,11 @@ from datetime import datetime
 
 import pytest
 
-from apps.renogy_devices.device import RenogyDevice, RenogyDeviceData, RenogyDeviceManager
+from apps.renogy_devices.device import (
+    RenogyDevice,
+    RenogyDeviceData,
+    RenogyDeviceManager,
+)
 
 
 class TestRenogyDevice:

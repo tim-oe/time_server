@@ -1,5 +1,7 @@
-from django.urls import path, include
+from django.urls import include, path
+
 from rest_framework.routers import DefaultRouter
+
 from . import views
 
 router = DefaultRouter()
@@ -9,9 +11,7 @@ urlpatterns = [
     path("", include(router.urls)),
     # Renogy device endpoints
     path("renogy/devices/", views.renogy_device_list, name="renogy_device_list"),
-    path(
-        "renogy/devices/add/", views.renogy_device_add, name="renogy_device_add"
-    ),
+    path("renogy/devices/add/", views.renogy_device_add, name="renogy_device_add"),
     path(
         "renogy/devices/<str:device_address>/",
         views.renogy_device_remove,

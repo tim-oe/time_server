@@ -72,51 +72,48 @@ def renogy_device_add(request):
 
     if not device_address:
         return Response(
-            {"error": "device_address is required"},
-            status=status.HTTP_400_BAD_REQUEST
+            {"error": "device_address is required"}, status=status.HTTP_400_BAD_REQUEST
         )
 
     # Validate device address format (basic validation)
     if not _is_valid_bluetooth_address(device_address):
         return Response(
             {"error": "Invalid Bluetooth address format"},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     # Check if device already exists
     if device_manager.get_device(device_address):
         return Response(
-            {"error": "Device already exists"},
-            status=status.HTTP_409_CONFLICT
+            {"error": "Device already exists"}, status=status.HTTP_409_CONFLICT
         )
 
     # Add device
     device = device_manager.add_device(device_address, timeout)
 
-    return Response({
-        "message": "Device added successfully",
-        "device_address": device.device_address,
-        "timeout": device.timeout
-    }, status=status.HTTP_201_CREATED)
+    return Response(
+        {
+            "message": "Device added successfully",
+            "device_address": device.device_address,
+            "timeout": device.timeout,
+        },
+        status=status.HTTP_201_CREATED,
+    )
 
 
 @api_view(["DELETE"])
 def renogy_device_remove(request, device_address):
     """Remove a Renogy device."""
     if not device_manager.get_device(device_address):
-        return Response(
-            {"error": "Device not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+        return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
     # Disconnect and remove device
     asyncio.create_task(_disconnect_device_async(device_address))
     device_manager.remove_device(device_address)
 
-    return Response({
-        "message": "Device removed successfully",
-        "device_address": device_address
-    })
+    return Response(
+        {"message": "Device removed successfully", "device_address": device_address}
+    )
 
 
 @api_view(["POST"])
@@ -124,39 +121,46 @@ def renogy_device_connect(request, device_address):
     """Connect to a specific Renogy device."""
     device = device_manager.get_device(device_address)
     if not device:
-        return Response(
-            {"error": "Device not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+        return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if device.is_connected:
-        return Response({
-            "message": "Device already connected",
-            "device_address": device_address,
-            "status": "connected"
-        })
+        return Response(
+            {
+                "message": "Device already connected",
+                "device_address": device_address,
+                "status": "connected",
+            }
+        )
 
     # Connect to device
     try:
         connected = asyncio.run(device.connect())
         if connected:
-            return Response({
-                "message": "Device connected successfully",
-                "device_address": device_address,
-                "status": "connected"
-            })
+            return Response(
+                {
+                    "message": "Device connected successfully",
+                    "device_address": device_address,
+                    "status": "connected",
+                }
+            )
         else:
-            return Response({
-                "error": "Failed to connect to device",
-                "device_address": device_address,
-                "status": "disconnected"
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {
+                    "error": "Failed to connect to device",
+                    "device_address": device_address,
+                    "status": "disconnected",
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
     except Exception as e:
-        return Response({
-            "error": f"Connection error: {str(e)}",
-            "device_address": device_address,
-            "status": "error"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {
+                "error": f"Connection error: {str(e)}",
+                "device_address": device_address,
+                "status": "error",
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["POST"])
@@ -164,32 +168,36 @@ def renogy_device_disconnect(request, device_address):
     """Disconnect from a specific Renogy device."""
     device = device_manager.get_device(device_address)
     if not device:
-        return Response(
-            {"error": "Device not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+        return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if not device.is_connected:
-        return Response({
-            "message": "Device already disconnected",
-            "device_address": device_address,
-            "status": "disconnected"
-        })
+        return Response(
+            {
+                "message": "Device already disconnected",
+                "device_address": device_address,
+                "status": "disconnected",
+            }
+        )
 
     # Disconnect from device
     try:
         asyncio.run(device.disconnect())
-        return Response({
-            "message": "Device disconnected successfully",
-            "device_address": device_address,
-            "status": "disconnected"
-        })
+        return Response(
+            {
+                "message": "Device disconnected successfully",
+                "device_address": device_address,
+                "status": "disconnected",
+            }
+        )
     except Exception as e:
-        return Response({
-            "error": f"Disconnection error: {str(e)}",
-            "device_address": device_address,
-            "status": "error"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {
+                "error": f"Disconnection error: {str(e)}",
+                "device_address": device_address,
+                "status": "error",
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["GET"])
@@ -197,20 +205,20 @@ def renogy_device_data(request, device_address):
     """Get data from a specific Renogy device."""
     device = device_manager.get_device(device_address)
     if not device:
-        return Response(
-            {"error": "Device not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+        return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
     # Read data from device
     try:
         data = asyncio.run(device.read_data())
         return Response(data.to_dict())
     except Exception as e:
-        return Response({
-            "error": f"Error reading device data: {str(e)}",
-            "device_address": device_address
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {
+                "error": f"Error reading device data: {str(e)}",
+                "device_address": device_address,
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["GET"])
@@ -218,17 +226,16 @@ def renogy_device_status(request, device_address):
     """Get status of a specific Renogy device."""
     device = device_manager.get_device(device_address)
     if not device:
-        return Response(
-            {"error": "Device not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
+        return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    return Response({
-        "device_address": device_address,
-        "connected": device.is_connected,
-        "timeout": device.timeout,
-        "status": "connected" if device.is_connected else "disconnected"
-    })
+    return Response(
+        {
+            "device_address": device_address,
+            "connected": device.is_connected,
+            "timeout": device.timeout,
+            "status": "connected" if device.is_connected else "disconnected",
+        }
+    )
 
 
 @api_view(["POST"])
@@ -236,16 +243,21 @@ def renogy_connect_all(request):
     """Connect to all managed Renogy devices."""
     try:
         results = asyncio.run(device_manager.connect_all())
-        return Response({
-            "message": "Connection attempt completed",
-            "results": results,
-            "total_devices": len(results),
-            "successful_connections": sum(1 for success in results.values() if success)
-        })
+        return Response(
+            {
+                "message": "Connection attempt completed",
+                "results": results,
+                "total_devices": len(results),
+                "successful_connections": sum(
+                    1 for success in results.values() if success
+                ),
+            }
+        )
     except Exception as e:
-        return Response({
-            "error": f"Error connecting to devices: {str(e)}"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": f"Error connecting to devices: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["POST"])
@@ -253,14 +265,17 @@ def renogy_disconnect_all(request):
     """Disconnect from all managed Renogy devices."""
     try:
         asyncio.run(device_manager.disconnect_all())
-        return Response({
-            "message": "All devices disconnected successfully",
-            "total_devices": len(device_manager.devices)
-        })
+        return Response(
+            {
+                "message": "All devices disconnected successfully",
+                "total_devices": len(device_manager.devices),
+            }
+        )
     except Exception as e:
-        return Response({
-            "error": f"Error disconnecting from devices: {str(e)}"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": f"Error disconnecting from devices: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["GET"])
@@ -279,20 +294,24 @@ def renogy_all_data(request):
                 all_data[address] = {
                     "error": f"Error reading data: {str(e)}",
                     "device_address": address,
-                    "connection_status": "error"
+                    "connection_status": "error",
                 }
         else:
             all_data[address] = {
                 "error": "Device not connected",
                 "device_address": address,
-                "connection_status": "disconnected"
+                "connection_status": "disconnected",
             }
 
-    return Response({
-        "devices": all_data,
-        "total_devices": len(devices),
-        "connected_devices": sum(1 for device in device_manager.devices.values() if device.is_connected)
-    })
+    return Response(
+        {
+            "devices": all_data,
+            "total_devices": len(devices),
+            "connected_devices": sum(
+                1 for device in device_manager.devices.values() if device.is_connected
+            ),
+        }
+    )
 
 
 @extend_schema_view(
@@ -329,37 +348,37 @@ class RenogyDeviceViewSet(viewsets.ViewSet):
         """Remove a device."""
         return renogy_device_remove(request, pk)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def connect(self, request, pk=None):
         """Connect to a device."""
         return renogy_device_connect(request, pk)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def disconnect(self, request, pk=None):
         """Disconnect from a device."""
         return renogy_device_disconnect(request, pk)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def data(self, request, pk=None):
         """Get device data."""
         return renogy_device_data(request, pk)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def status(self, request, pk=None):
         """Get device status."""
         return renogy_device_status(request, pk)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def connect_all(self, request):
         """Connect to all devices."""
         return renogy_connect_all(request)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def disconnect_all(self, request):
         """Disconnect from all devices."""
         return renogy_disconnect_all(request)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def all_data(self, request):
         """Get data from all devices."""
         return renogy_all_data(request)
@@ -372,7 +391,7 @@ def _is_valid_bluetooth_address(address: str) -> bool:
         return False
 
     # Basic validation: should be in format XX:XX:XX:XX:XX:XX
-    parts = address.split(':')
+    parts = address.split(":")
     if len(parts) != 6:
         return False
 

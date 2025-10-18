@@ -7,12 +7,13 @@ It handles device connection, data reading, and error handling.
 
 import asyncio
 import logging
-from datetime import datetime
-from typing import Dict, Optional, Any
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 try:
     from renogy_modbus import RenogyModbus
+
     RENOGY_AVAILABLE = True
 except ImportError:
     RENOGY_AVAILABLE = False
@@ -24,6 +25,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RenogyDeviceData:
     """Data structure for Renogy device information."""
+
     device_address: str
     battery_voltage: Optional[float] = None
     battery_current: Optional[float] = None
@@ -69,9 +71,7 @@ class RenogyDevice:
     provides methods to read device data.
     """
 
-    def __init__(
-        self, device_address: str, timeout: int = 10
-    ):
+    def __init__(self, device_address: str, timeout: int = 10):
         """
         Initialize Renogy device handler.
 
@@ -103,15 +103,15 @@ class RenogyDevice:
 
             # Initialize the Renogy Modbus connection
             self.connection = RenogyModbus(
-                device=self.device_address,
-                baudrate=9600,
-                timeout=self.timeout
+                device=self.device_address, baudrate=9600, timeout=self.timeout
             )
 
             # Test connection by reading basic data
             await self._test_connection()
             self.is_connected = True
-            logger.info(f"Successfully connected to Renogy device {self.device_address}")
+            logger.info(
+                f"Successfully connected to Renogy device {self.device_address}"
+            )
             return True
 
         except Exception as e:
@@ -124,7 +124,7 @@ class RenogyDevice:
         try:
             if self.connection:
                 # Close the connection if available
-                if hasattr(self.connection, 'close'):
+                if hasattr(self.connection, "close"):
                     self.connection.close()
                 self.connection = None
 
@@ -157,25 +157,25 @@ class RenogyDevice:
             # Read battery data
             battery_data = await self._read_battery_data()
             if battery_data:
-                data.battery_voltage = battery_data.get('voltage')
-                data.battery_current = battery_data.get('current')
-                data.battery_power = battery_data.get('power')
-                data.battery_soc = battery_data.get('soc')
-                data.battery_temperature = battery_data.get('temperature')
+                data.battery_voltage = battery_data.get("voltage")
+                data.battery_current = battery_data.get("current")
+                data.battery_power = battery_data.get("power")
+                data.battery_soc = battery_data.get("soc")
+                data.battery_temperature = battery_data.get("temperature")
 
             # Read PV (solar panel) data
             pv_data = await self._read_pv_data()
             if pv_data:
-                data.pv_voltage = pv_data.get('voltage')
-                data.pv_current = pv_data.get('current')
-                data.pv_power = pv_data.get('power')
+                data.pv_voltage = pv_data.get("voltage")
+                data.pv_current = pv_data.get("current")
+                data.pv_power = pv_data.get("power")
 
             # Read load data
             load_data = await self._read_load_data()
             if load_data:
-                data.load_voltage = load_data.get('voltage')
-                data.load_current = load_data.get('current')
-                data.load_power = load_data.get('power')
+                data.load_voltage = load_data.get("voltage")
+                data.load_current = load_data.get("current")
+                data.load_power = load_data.get("power")
 
             data.connection_status = "connected"
             logger.debug(f"Successfully read data from device {self.device_address}")
@@ -183,7 +183,9 @@ class RenogyDevice:
         except Exception as e:
             data.connection_status = "error"
             data.error_message = str(e)
-            logger.error(f"Error reading data from device {self.device_address}: {str(e)}")
+            logger.error(
+                f"Error reading data from device {self.device_address}: {str(e)}"
+            )
 
         return data
 
@@ -205,11 +207,11 @@ class RenogyDevice:
             # Placeholder for actual battery data reading
             # This would use the specific methods from renogy_modbus library
             return {
-                'voltage': 12.5,  # V
-                'current': 2.3,   # A
-                'power': 28.75,   # W
-                'soc': 85,        # %
-                'temperature': 25.5  # °C
+                "voltage": 12.5,  # V
+                "current": 2.3,  # A
+                "power": 28.75,  # W
+                "soc": 85,  # %
+                "temperature": 25.5,  # °C
             }
 
         except Exception as e:
@@ -223,11 +225,7 @@ class RenogyDevice:
                 return None
 
             # Placeholder for actual PV data reading
-            return {
-                'voltage': 18.2,  # V
-                'current': 1.8,   # A
-                'power': 32.76    # W
-            }
+            return {"voltage": 18.2, "current": 1.8, "power": 32.76}  # V  # A  # W
 
         except Exception as e:
             logger.error(f"Error reading PV data: {str(e)}")
@@ -240,11 +238,7 @@ class RenogyDevice:
                 return None
 
             # Placeholder for actual load data reading
-            return {
-                'voltage': 12.1,  # V
-                'current': 0.5,   # A
-                'power': 6.05     # W
-            }
+            return {"voltage": 12.1, "current": 0.5, "power": 6.05}  # V  # A  # W
 
         except Exception as e:
             logger.error(f"Error reading load data: {str(e)}")

@@ -15,9 +15,10 @@ from .serializers import (
 )
 
 
+# pylint: disable=line-too-long
 @extend_schema(
     summary="Get current server time",
-    description="Returns the current server time in ISO format with timezone information",
+    description="Returns the current server time in ISO format with comprehensive timezone information including UTC offset and daylight saving time details",
     tags=["Time"],
     responses={
         200: {
@@ -29,7 +30,7 @@ from .serializers import (
             },
         }
     },
-)
+)  # noqa
 @api_view(["GET"])
 def current_time(request):
     """Return the current server time."""
@@ -110,7 +111,7 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Get time entry statistics",
-        description="Retrieve statistics about all time entries including total count and duration",
+        description="Retrieve statistics about all time entries including count and duration",
         tags=["Time Entries"],
         responses={
             200: {

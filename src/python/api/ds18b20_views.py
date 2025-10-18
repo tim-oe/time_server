@@ -4,20 +4,13 @@ DS18B20 Temperature Sensor API Views
 This module provides REST API endpoints for interacting with DS18B20 temperature sensors.
 """
 
-import asyncio
-
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from .ds18b20_sensor import (
-    DS18B20Sensor,
-    DS18B20SensorManager,
-    TemperatureReading,
-    discover_all_ds18b20_sensors,
-)
+from .ds18b20_sensor import DS18B20SensorManager, discover_all_ds18b20_sensors
 
 # Global sensor manager instance
 sensor_manager = DS18B20SensorManager()
@@ -391,4 +384,3 @@ class DS18B20SensorViewSet(viewsets.ViewSet):
     def summary(self, request):
         """Get sensor summary."""
         return ds18b20_sensor_summary(request)
-

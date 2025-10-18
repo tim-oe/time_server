@@ -24,6 +24,31 @@ pytest-cov = "^4.1"
 pytest-asyncio = "^0.21.0"
 pytest-html = "^4.1.1"
 
+[tool.poetry.scripts]
+# Development tasks
+dev-server = "scripts.dev:start_dev_server"
+test = "scripts.dev:run_tests"
+test-cov = "scripts.dev:run_tests_with_coverage"
+lint = "scripts.dev:run_linting"
+format = "scripts.dev:run_formatting"
+clean = "scripts.dev:clean_project"
+help = "scripts.dev:show_help"
+
+# Docker tasks
+docker-build = "scripts.docker:build_image"
+docker-run = "scripts.docker:run_container"
+docker-stop = "scripts.docker:stop_container"
+docker-logs = "scripts.docker:show_logs"
+
+# Database tasks
+db-migrate = "scripts.db:migrate"
+db-reset = "scripts.db:reset_database"
+db-seed = "scripts.db:seed_database"
+
+# Deployment tasks
+deploy-staging = "scripts.deploy:deploy_staging"
+deploy-prod = "scripts.deploy:deploy_production"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -43,6 +68,8 @@ extend-exclude = '''
   | \.venv
   | build
   | dist
+  | tests
+  | reports
 )/
 '''
 
@@ -53,6 +80,7 @@ line_length = 88
 known_django = "django"
 known_first_party = "time_server"
 sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip_glob = ["tests/*", "reports/*"]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "time_server.settings"
@@ -70,7 +98,7 @@ addopts = [
 
 [tool.flake8]
 max-line-length = 88
-extend-ignore = ["E203", "W503"]
+extend-ignore = ["E203", "W503", "E501"]
 exclude = [
     ".git",
     "__pycache__",
@@ -79,6 +107,8 @@ exclude = [
     ".venv",
     "build",
     "dist",
+    "tests",
+    "reports",
 ]
 per-file-ignores = [
     "time_server/settings.py:E501",
